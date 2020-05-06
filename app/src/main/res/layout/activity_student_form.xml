@@ -5,26 +5,34 @@
     android:padding="@dimen/margin_small"
     android:orientation="vertical">
 
-    <EditText android:id="@+id/edt_nome_aluno"
+    <EditText android:id="@+id/edt_student_first_name"
         android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/margin_small"
-        android:hint="@string/hint_nome"
+        android:hint="@string/hint_first_name"
         android:inputType="textCapWords"
         android:layout_height="wrap_content"
         android:importantForAutofill="no" />
 
-    <EditText android:id="@+id/edt_telefone_aluno"
+    <EditText android:id="@+id/edt_student_last_name"
         android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/margin_small"
-        android:hint="@string/hint_telefone"
+        android:hint="@string/hint_last_name"
+        android:inputType="textCapWords"
+        android:layout_height="wrap_content"
+        android:importantForAutofill="no" />
+
+    <EditText android:id="@+id/edt_student_phone"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:hint="@string/hint_phone"
         android:inputType="phone"
         android:layout_height="wrap_content"
         android:importantForAutofill="no" />
 
-    <EditText android:id="@+id/edt_email_aluno"
+    <EditText android:id="@+id/edt_student_email"
         android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/margin_small"
-        android:hint="@string/hint_e_mail"
+        android:hint="@string/hint_email"
         android:inputType="textEmailAddress"
         android:layout_height="wrap_content"
         android:importantForAutofill="no" />

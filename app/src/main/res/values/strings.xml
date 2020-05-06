@@ -1,11 +1,16 @@
 <resources>
     <string name="app_name">MIM: Agenda</string>
-    <string name="menu_item_remover">Remover</string>
-    <string name="hint_nome">Nome</string>
-    <string name="hint_telefone">Telefone</string>
-    <string name="hint_e_mail">e-mail</string>
-    <string name="btn_salvar">Salvar</string>
-    <string name="titulo_activity_lista_alunos">Lista de alunos</string>
-    <string name="titulo_activity_criar_aluno">Criar Aluno</string>
-    <string name="titulo_activity_editar_aluno">Editar Aluno</string>
+    <string name="menu_item_remove">Remove</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_phone">Phone number</string>
+    <string name="hint_email">e-mail</string>
+    <string name="btn_save">Save</string>
+    <string name="activity_header_students_list">Students List</string>
+    <string name="activity_header_create_student">New Student</string>
+    <string name="activity_header_update_student">Update Student</string>
+    <string name="remove_student">Remove Student</string>
+    <string name="question_to_confirm_student_removal">Do you really want to remove the student?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
