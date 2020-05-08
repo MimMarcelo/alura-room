@@ -22,7 +22,7 @@ public abstract class StudentDao {
         insert(student);
     }
 
-    @Query("SELECT s.id, s.firstName, s.lastName, s.phone, s.email, s.createdAt FROM Student s ORDER BY s.firstName")
+    @Query("SELECT s.id, s.firstName, s.lastName, s.email, s.createdAt FROM Student s ORDER BY s.firstName")
     public abstract List<Student> all();
 
     @Delete

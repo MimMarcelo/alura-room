@@ -29,6 +29,14 @@
         android:layout_height="wrap_content"
         android:importantForAutofill="no" />
 
+    <EditText android:id="@+id/edt_student_cellphone"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:hint="@string/hint_cellphone"
+        android:inputType="phone"
+        android:layout_height="wrap_content"
+        android:importantForAutofill="no" />
+
     <EditText android:id="@+id/edt_student_email"
         android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/margin_small"

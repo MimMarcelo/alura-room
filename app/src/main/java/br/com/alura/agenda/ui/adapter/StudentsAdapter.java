@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.alura.agenda.R;
+import br.com.alura.agenda.database.AgendaDatabase;
+import br.com.alura.agenda.database.dao.PhoneDao;
+import br.com.alura.agenda.model.Phone;
 import br.com.alura.agenda.model.Student;
 import br.com.alura.agenda.ui.holder.StudentsHolder;
 
@@ -17,10 +20,12 @@ public class StudentsAdapter extends BaseAdapter {
 
     private final List<Student> students;
     private final Context context;
+    private final PhoneDao dao;
 
     public StudentsAdapter(Context context) {
         this.students = new ArrayList<>();
         this.context = context;
+        dao = AgendaDatabase.getInstance(context).getPhoneDao();
     }
 
     @Override
@@ -52,7 +57,8 @@ public class StudentsAdapter extends BaseAdapter {
 
         Student student = students.get(position);
         holder.txtFullName.setText(student.getFullName());
-        holder.txtPhone.setText(student.getPhone());
+        Phone studentPhone = dao.getFirstPhone(student.getId());
+        holder.txtPhone.setText(studentPhone.getNumber());
 
         return view;
     }

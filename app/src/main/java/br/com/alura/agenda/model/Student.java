@@ -16,7 +16,6 @@ public class Student implements Serializable {
     private int id;
     private String firstName;
     private String lastName;
-    private String phone;
     private String email;
     private Calendar createdAt;
 
@@ -24,7 +23,6 @@ public class Student implements Serializable {
     public Student(String firstName, String lastName, String phone, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.phone = phone;
         this.email = email;
     }
 
@@ -47,10 +45,6 @@ public class Student implements Serializable {
     public String getFullName() {
 
         return (lastName == null? "": lastName.toUpperCase() + ", ") + firstName;
-    }
-
-    public String getPhone() {
-        return phone;
     }
 
     public String getEmail() {
@@ -78,10 +72,6 @@ public class Student implements Serializable {
         this.lastName = lastName;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -95,4 +85,5 @@ public class Student implements Serializable {
     public String toString() {
         return firstName + " " + lastName;
     }
+
 }

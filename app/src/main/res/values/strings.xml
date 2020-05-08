@@ -13,4 +13,5 @@
     <string name="question_to_confirm_student_removal">Do you really want to remove the student?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="hint_cellphone">Cellphone number</string>
 </resources>

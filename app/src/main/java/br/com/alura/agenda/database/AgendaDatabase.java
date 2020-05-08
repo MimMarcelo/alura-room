@@ -11,17 +11,21 @@ import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import br.com.alura.agenda.database.converter.CalendarConverter;
+import br.com.alura.agenda.database.converter.PhoneTypeConverter;
+import br.com.alura.agenda.database.dao.PhoneDao;
 import br.com.alura.agenda.database.dao.StudentDao;
+import br.com.alura.agenda.model.Phone;
 import br.com.alura.agenda.model.Student;
 
 @Database(
         entities = {
-                Student.class
+                Student.class,
+                Phone.class
         },
-        version = 4,
+        version = 6,
         exportSchema = false
 )
-@TypeConverters({CalendarConverter.class})
+@TypeConverters({CalendarConverter.class, PhoneTypeConverter.class})
 public abstract class AgendaDatabase extends RoomDatabase {
 
     private static final String DB_NAME = "agenda.db";
@@ -29,6 +33,8 @@ public abstract class AgendaDatabase extends RoomDatabase {
     private static AgendaDatabase instance;
 
     public abstract StudentDao getStudentDao();
+
+    public abstract PhoneDao getPhoneDao();
 
     public static AgendaDatabase getInstance(Context context) {
         if (instance == null) {
@@ -74,15 +80,54 @@ public abstract class AgendaDatabase extends RoomDatabase {
         Migration MIGRATION_3_4 = new Migration(3, 4) {
             @Override
             public void migrate(@NonNull SupportSQLiteDatabase database) {
-                //Renomear tabela nova
                 database.execSQL("ALTER TABLE Student ADD COLUMN 'createdAt' INTEGER");
+            }
+        };
+
+        Migration MIGRATION_4_5 = new Migration(4, 5) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase database) {
+                database.execSQL("ALTER TABLE Student ADD COLUMN 'cellPhone' TEXT");
+            }
+        };
+
+        Migration MIGRATION_5_6 = new Migration(5, 6) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase database) {
+                database.execSQL("CREATE TABLE IF NOT EXISTS `StudentTemp` (" +
+                        "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`firstName` TEXT, " +
+                        "`lastName` TEXT, " +
+                        "`email` TEXT, " +
+                        "`createdAt` INTEGER" +
+                        ")"
+                );
+
+                database.execSQL("INSERT INTO StudentTemp (id, firstName, lastName, email, createdAt) " +
+                        "SELECT id, firstName, lastName, email, createdAt FROM Student");
+
+                database.execSQL("CREATE TABLE IF NOT EXISTS `Phone` (" +
+                        "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`studentId` INTEGER NOT NULL, " +
+                        "`number` TEXT, " +
+                        "`type` TEXT" +
+                        ")"
+                );
+
+                database.execSQL("INSERT INTO Phone (number, studentId, type) " +
+                        "SELECT phone, id, 'PHONE' FROM Student");
+
+                database.execSQL("DROP TABLE Student");
+                database.execSQL("ALTER TABLE StudentTemp RENAME TO Student");
             }
         };
 
         Migration[] MIGRATIONS = {
                 MIGRATION_1_2,
                 MIGRATION_2_3,
-                MIGRATION_3_4
+                MIGRATION_3_4,
+                MIGRATION_4_5,
+                MIGRATION_5_6
         };
     }
 }

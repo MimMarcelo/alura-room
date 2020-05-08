@@ -22,6 +22,7 @@ public class StudentFormActivity extends AppCompatActivity {
     private EditText edtFirstName;
     private EditText edtLastName;
     private EditText edtPhone;
+    private EditText edtCellPhone;
     private EditText edtEmail;
 
     @Override
@@ -56,6 +57,7 @@ public class StudentFormActivity extends AppCompatActivity {
         edtFirstName = findViewById(R.id.edt_student_first_name);
         edtLastName = findViewById(R.id.edt_student_last_name);
         edtPhone = findViewById(R.id.edt_student_phone);
+        edtCellPhone = findViewById(R.id.edt_student_cellphone);
         edtEmail = findViewById(R.id.edt_student_email);
     }
 
@@ -66,7 +68,8 @@ public class StudentFormActivity extends AppCompatActivity {
             if (student != null) {
                 edtFirstName.setText(student.getFirstName());
                 edtLastName.setText(student.getLastName());
-                edtPhone.setText(student.getPhone());
+//                edtPhone.setText(student.getPhone());
+//                edtCellPhone.setText(student.getCellPhone());
                 edtEmail.setText(student.getEmail());
             }
         }
@@ -76,11 +79,13 @@ public class StudentFormActivity extends AppCompatActivity {
         String firstName = edtFirstName.getText().toString();
         String lastName = edtLastName.getText().toString();
         String phone = edtPhone.getText().toString();
+        String cellPhone = edtCellPhone.getText().toString();
         String email = edtEmail.getText().toString();
 
         student.setFirstName(firstName);
         student.setLastName(lastName);
-        student.setPhone(phone);
+//        student.setPhone(phone);
+//        student.setCellPhone(cellPhone);
         student.setEmail(email);
 
         dao.save(student);
