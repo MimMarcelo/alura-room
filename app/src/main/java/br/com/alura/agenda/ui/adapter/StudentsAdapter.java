@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.alura.agenda.R;
+import br.com.alura.agenda.asynctask.PhoneSearchFirstTask;
 import br.com.alura.agenda.database.AgendaDatabase;
 import br.com.alura.agenda.database.dao.PhoneDao;
 import br.com.alura.agenda.model.Phone;
@@ -57,8 +58,7 @@ public class StudentsAdapter extends BaseAdapter {
 
         Student student = students.get(position);
         holder.txtFullName.setText(student.getFullName());
-        Phone studentPhone = dao.getFirstPhone(student.getId());
-        holder.txtPhone.setText(studentPhone.getNumber());
+        new PhoneSearchFirstTask(dao, holder.txtPhone, student.getId()).execute();
 
         return view;
     }

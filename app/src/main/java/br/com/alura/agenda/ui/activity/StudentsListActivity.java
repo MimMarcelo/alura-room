@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import br.com.alura.agenda.R;
+import br.com.alura.agenda.asynctask.StudentRemoveTask;
+import br.com.alura.agenda.asynctask.StudentSearchTask;
 import br.com.alura.agenda.database.AgendaDatabase;
 import br.com.alura.agenda.database.dao.StudentDao;
 import br.com.alura.agenda.helper.M;
@@ -45,7 +47,7 @@ public class StudentsListActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.update(dao.all());
+        new StudentSearchTask(adapter, dao).execute();
     }
 
     @Override
@@ -69,8 +71,7 @@ public class StudentsListActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Student student = adapter.getItem(position);
-                        dao.remove(student);
-                        adapter.remove(student);
+                        new StudentRemoveTask(adapter, dao, student).execute();
                     }
                 })
                 .setNegativeButton(R.string.no, null)
