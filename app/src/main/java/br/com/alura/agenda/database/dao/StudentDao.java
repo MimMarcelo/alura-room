@@ -13,24 +13,20 @@ import br.com.alura.agenda.model.Student;
 @Dao
 public abstract class StudentDao {
 
-    public void save(Student student){
-        if(student.getId() > 0){
-            update(student);
-            return;
-        }
-
-        insert(student);
-    }
-
     @Query("SELECT s.id, s.firstName, s.lastName, s.email, s.createdAt FROM Student s ORDER BY s.firstName")
     public abstract List<Student> all();
 
     @Delete
     public abstract void remove(Student student);
 
+    /**
+     * Salva o aluno como um novo registro no banco de dados
+     * @param student
+     * @return long id - Ao especificar o tipo do retorno como long, ele retorna o ID gerado
+     */
     @Insert
-    protected abstract void insert(Student student);
+    public abstract Long insert(Student student);
 
     @Update
-    protected abstract void update(Student student);
+    public abstract void update(Student student);
 }
