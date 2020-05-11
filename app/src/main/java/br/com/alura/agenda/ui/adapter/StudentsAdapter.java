@@ -46,7 +46,7 @@ public class StudentsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        StudentsHolder holder;
+        final StudentsHolder holder;
         if(view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.itemlist_student, parent, false);
             holder = new StudentsHolder(view);
@@ -58,7 +58,12 @@ public class StudentsAdapter extends BaseAdapter {
 
         Student student = students.get(position);
         holder.txtFullName.setText(student.getFullName());
-        new PhoneSearchFirstTask(dao, holder.txtPhone, student.getId()).execute();
+        new PhoneSearchFirstTask(dao, student.getId(), new PhoneSearchFirstTask.PhoneLoadListener() {
+            @Override
+            public void loadPhone(Phone phone) {
+                holder.txtPhone.setText(phone.getNumber());
+            }
+        }).execute();
 
         return view;
     }

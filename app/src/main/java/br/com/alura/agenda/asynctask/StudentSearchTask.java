@@ -6,15 +6,14 @@ import java.util.List;
 
 import br.com.alura.agenda.database.dao.StudentDao;
 import br.com.alura.agenda.model.Student;
-import br.com.alura.agenda.ui.adapter.StudentsAdapter;
 
 public class StudentSearchTask extends AsyncTask<Void, Void, List<Student>> {
-    private final StudentsAdapter adapter;
     private final StudentDao dao;
+    private StudentTaskListener studentTaskListener;
 
-    public StudentSearchTask(StudentsAdapter adapter, StudentDao dao) {
-        this.adapter = adapter;
+    public StudentSearchTask(StudentDao dao, StudentTaskListener studentTaskListener) {
         this.dao = dao;
+        this.studentTaskListener = studentTaskListener;
     }
 
     @Override
@@ -25,6 +24,6 @@ public class StudentSearchTask extends AsyncTask<Void, Void, List<Student>> {
     @Override
     protected void onPostExecute(List<Student> o) {
         super.onPostExecute(o);
-        adapter.update(o);
+        studentTaskListener.postTaskExecute(o, StudentOptions.READ);
     }
 }

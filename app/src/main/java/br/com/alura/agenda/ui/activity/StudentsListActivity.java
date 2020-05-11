@@ -15,9 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
+
 import br.com.alura.agenda.R;
-import br.com.alura.agenda.asynctask.StudentRemoveTask;
-import br.com.alura.agenda.asynctask.StudentSearchTask;
+import br.com.alura.agenda.asynctask.StudentOptions;
+import br.com.alura.agenda.asynctask.StudentTasks;
+import br.com.alura.agenda.asynctask.StudentTaskListener;
 import br.com.alura.agenda.database.AgendaDatabase;
 import br.com.alura.agenda.database.dao.StudentDao;
 import br.com.alura.agenda.helper.M;
@@ -25,9 +28,9 @@ import br.com.alura.agenda.model.Student;
 import br.com.alura.agenda.ui.adapter.StudentsAdapter;
 
 public class StudentsListActivity extends AppCompatActivity
-        implements AdapterView.OnItemClickListener, View.OnClickListener {
+        implements AdapterView.OnItemClickListener, View.OnClickListener, StudentTaskListener {
 
-    private StudentDao dao;
+    private StudentTasks studentTasks;
 
     private StudentsAdapter adapter;
 
@@ -37,9 +40,11 @@ public class StudentsListActivity extends AppCompatActivity
         setContentView(R.layout.activity_students_list);
         setTitle(R.string.activity_header_students_list);
 
-        dao = AgendaDatabase
-                .getInstance(this)
-                .getStudentDao();
+        studentTasks = new StudentTasks(
+                AgendaDatabase
+                        .getInstance(this)
+                        .getStudentDao(),
+        this);
 
         getViews();
     }
@@ -47,7 +52,7 @@ public class StudentsListActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        new StudentSearchTask(adapter, dao).execute();
+        studentTasks.read();
     }
 
     @Override
@@ -71,7 +76,7 @@ public class StudentsListActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Student student = adapter.getItem(position);
-                        new StudentRemoveTask(adapter, dao, student).execute();
+                        studentTasks.delete(student);
                     }
                 })
                 .setNegativeButton(R.string.no, null)
@@ -103,5 +108,17 @@ public class StudentsListActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
         startActivity(new Intent(this, StudentFormActivity.class));
+    }
+
+    @Override
+    public void postTaskExecute(List<Student> students, StudentOptions studentOption) {
+        switch (studentOption) {
+            case READ:
+                adapter.update(students);
+                break;
+            case DELETE:
+                adapter.remove(students.get(0));
+                break;
+        }
     }
 }

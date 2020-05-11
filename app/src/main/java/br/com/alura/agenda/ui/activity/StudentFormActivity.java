@@ -7,20 +7,24 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import br.com.alura.agenda.R;
+import br.com.alura.agenda.asynctask.PhoneGetAllTask;
+import br.com.alura.agenda.asynctask.StudentOptions;
+import br.com.alura.agenda.asynctask.StudentTaskListener;
+import br.com.alura.agenda.asynctask.StudentTasks;
 import br.com.alura.agenda.database.AgendaDatabase;
 import br.com.alura.agenda.database.dao.PhoneDao;
-import br.com.alura.agenda.database.dao.StudentDao;
 import br.com.alura.agenda.helper.M;
 import br.com.alura.agenda.model.Phone;
 import br.com.alura.agenda.model.PhoneType;
 import br.com.alura.agenda.model.Student;
 
-public class StudentFormActivity extends AppCompatActivity {
+public class StudentFormActivity extends AppCompatActivity implements StudentTaskListener {
 
-    private StudentDao studentDao;
+    private StudentTasks studentTasks;
     private PhoneDao phoneDao;
 
     private Student student;
@@ -39,9 +43,11 @@ public class StudentFormActivity extends AppCompatActivity {
         setTitle(R.string.activity_header_create_student);
 
         student = new Student();
-        studentDao = AgendaDatabase
-                .getInstance(this)
-                .getStudentDao();
+        studentTasks = new StudentTasks(
+                AgendaDatabase
+                        .getInstance(this)
+                        .getStudentDao(),
+        this);
         phoneDao = AgendaDatabase
                 .getInstance(this)
                 .getPhoneDao();
@@ -59,7 +65,6 @@ public class StudentFormActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         buildStudent();
-        finish();
         return super.onOptionsItemSelected(item);
     }
 
@@ -79,14 +84,21 @@ public class StudentFormActivity extends AppCompatActivity {
                 edtFirstName.setText(student.getFirstName());
                 edtLastName.setText(student.getLastName());
                 edtEmail.setText(student.getEmail());
-                phones = phoneDao.all(student.getId());
-                for (Phone p : phones) {
-                    if (p.getType() == PhoneType.PHONE) {
-                        edtPhone.setText(p.getNumber());
-                    } else {
-                        edtCellPhone.setText(p.getNumber());
+                new PhoneGetAllTask(phoneDao, student.getId(), new PhoneGetAllTask.LoadPhonesListener() {
+                    @Override
+                    public void loadPhones(List<Phone> phones) {
+
+                        StudentFormActivity.this.phones = phones;
+                        for (Phone p : phones) {
+                            if (p.getType() == PhoneType.PHONE) {
+                                edtPhone.setText(p.getNumber());
+                            } else {
+                                edtCellPhone.setText(p.getNumber());
+                            }
+                        }
                     }
-                }
+                })
+                .execute();
             }
         }
     }
@@ -106,19 +118,23 @@ public class StudentFormActivity extends AppCompatActivity {
         Phone cellPhone = new Phone(cellPhoneNumber, PhoneType.CELLPHONE);
 
         if (student.getId() > 0) {
-            studentDao.update(student);
-            for (Phone p : phones) {
-                if (p.getType() == PhoneType.PHONE) {
-                    phone.setId(p.getId());
-                } else {
-                    cellPhone.setId(p.getId());
-                }
-            }
+            student.setPhones(Arrays.asList(phone, cellPhone));
+            studentTasks.update(student);
         } else {
-            student.setId(studentDao.insert(student).intValue());
+            student.addPhone(phone);
+            student.addPhone(cellPhone);
+            studentTasks.create(
+                    student);
         }
-        phone.setStudentId(student.getId());
-        cellPhone.setStudentId(student.getId());
-        phoneDao.update(phone, cellPhone);
+    }
+
+    @Override
+    public void postTaskExecute(List<Student> students, StudentOptions studentOption) {
+        switch (studentOption) {
+            case CREATE:
+            case UPDATE:
+                finish();
+                break;
+        }
     }
 }

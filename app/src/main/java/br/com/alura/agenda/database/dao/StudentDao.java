@@ -3,11 +3,13 @@ package br.com.alura.agenda.database.dao;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
 
+import br.com.alura.agenda.model.Phone;
 import br.com.alura.agenda.model.Student;
 
 @Dao
@@ -27,6 +29,22 @@ public abstract class StudentDao {
     @Insert
     public abstract Long insert(Student student);
 
+    @Insert
+    public abstract void insert(List<Phone> phones);
+
+    public void insertWithPhones(Student student){
+        student.setId(insert(student).intValue());
+        insert(student.getPhones());
+    }
+
     @Update
     public abstract void update(Student student);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract void update(List<Phone> phones);
+
+    public void updateWithPhones(Student student){
+        update(student);
+        update(student.getPhones());
+    }
 }

@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 @Entity
 public class Student implements Serializable {
@@ -19,6 +21,9 @@ public class Student implements Serializable {
     private String email;
     private Calendar createdAt;
 
+    @Ignore
+    private List<Phone> phones;
+
     @Ignore //Usado sempre que houver mais de um construtor na classe
     public Student(String firstName, String lastName, String phone, String email) {
         this.firstName = firstName;
@@ -28,6 +33,7 @@ public class Student implements Serializable {
 
     public Student(){
         createdAt = Calendar.getInstance();
+        phones = new ArrayList<>();
     }
 
     public int getId() {
@@ -60,8 +66,15 @@ public class Student implements Serializable {
         return format.format(createdAt.getTime());
     }
 
+    public List<Phone> getPhones() {
+        return this.phones;
+    }
+
     public void setId(int id) {
         this.id = id;
+        for (Phone phone: phones) {
+            phone.setStudentId(this.id);
+        }
     }
 
     public void setFirstName(String firstName) {
@@ -78,6 +91,18 @@ public class Student implements Serializable {
 
     public void setCreatedAt(Calendar createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setPhones(List<Phone> phones) {
+        for (Phone phone: phones) {
+            phone.setStudentId(this.id);
+        }
+        this.phones = phones;
+    }
+
+    public void addPhone(Phone phone) {
+        phone.setStudentId(this.id);
+        this.phones.add(phone);
     }
 
     @NonNull
